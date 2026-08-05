@@ -1,153 +1,206 @@
 # FlareCredit
 
-**Prove you're creditworthy without doxxing your wallet.**
+**Prove you're creditworthy without exposing your wallet.**
 
-Private credit scores for XRP holders, computed inside a TEE on Flare, consumed
-by an FXRP lending pool that cuts collateral from 150% to 120% for scores ≥ 700.
+FlareCredit verifies your XRPL payment history with Flare's Data Connector, calculates your credit score inside a confidential enclave, and publishes only the score on chain. Your XRPL address and transaction history remain private. A score of 700 or higher reduces the collateral required for FXRP loans from 150% to 120%.
 
-Uses all four enshrined protocols: **FDC** (XRPL history proofs), **FCC**
-(scoring enclave in GCP Confidential Space), **FTSO** (pricing), **FAssets**
-(FXRP lending).
+Built on Flare's four core protocols: **FDC** for payment verification, **FCC** for confidential scoring, **FTSOv2** for live price feeds, and **FAssets** for FXRP lending.
 
-## Stack
+Deployed on **Coston2 testnet** (chain ID 114).
 
-- **Backend**: Python / FastAPI  FDC verifier + DA-layer orchestration, XRPL
-  signature verification, enclave relay, chain reads via web3.py
-- **Frontend**: zero-build static app served by the backend  viem +
-  GemWallet via ESM, MetaMask on Coston2. Wallet-state buttons
-  (connect/sign/link with reset actions), light/dark theme, notifications,
-  session persistence, skeleton loading, and a live score-factor breakdown
-- **Contracts**: `contracts/`  IdentityLinkRegistry, CreditRegistry,
-  FxrpLendingPool (Solidity 0.8.20)
-- **Enclave**: your Go extension on fce-extension-scaffold;
-  `tools/mock_enclave.py` implements the identical HTTP + signing contract for
-  local development
+---
 
-## Run it
+## Deployed contracts — Coston2 testnet
 
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env            # fill in addresses as you deploy
+All contracts are verifiable on the
+[Coston2 explorer](https://coston2-explorer.flare.network).
 
-# terminal 1  mock enclave (until Confidential Space is live)
-python tools/mock_enclave.py    # prints {signer, codeHash}
+| Contract | Address | Role |
+|---|---|---|
+| `IdentityLinkRegistry` | `0x4ddf14F3ed14889E4A56C3b8C70304A0832cc93F` | Stores the hashed XRPL↔Flare binding |
+| `CreditRegistry` | `0x1A52F314aBb135CE58A26D9318601Ac671Db94FC` | Holds TEE-signed scores, whitelists enclave code hashes |
+| `FxrpLendingPool` | `0x80c4C5fB122362dE3845938c0deeA095382a83f1` | Score-gated FXRP lending, priced by FTSOv2 |
+| `MockFXRP` | `0x42A3941Ca9f665252E8708EE1307A01DC9E4DAF2` | The borrowable asset (stand-in for FAssets FXRP) |
 
-# terminal 2  app
-uvicorn app.main:app --reload   # http://localhost:8000
+Protocol contracts (`FdcHub`, `FtsoV2`, `FdcVerification`) are resolved at
+runtime through the **FlareContractRegistry** at
+`0xaD67FE66660Fb8dFE9d6b1b4240d8650e30F6019` — the same address on every Flare
+network — so no protocol address is hardcoded.
+
+Live addresses are also shown in the app under **Settings → Deployment**, each
+linking through to the explorer.
+
+---
+
+## What's in here
+
+```
+app/                    FastAPI backend
+  main.py               entrypoint + page routing
+  routes.py             JSON API (identity, FDC, scoring, lending)
+  chains.py             web3 plumbing, protocol registry, ABIs
+  config.py             settings from .env
+  fc_support.py         support contact endpoint (Resend)
+  services/
+    xrpl_identity.py    domain-bound challenge + signature verification
+    fdc.py              attestation request + DA-layer proof polling
+    enclave.py          enclave relay + signed-envelope verification
+    registry.py         contract reads/writes, FTSO prices
+
+contracts/              Solidity + pre-compiled artifacts.json
+  IdentityLinkRegistry.sol
+  CreditRegistry.sol
+  FxrpLendingPool.sol
+  MockFXRP.sol
+
+enclave-go/             real FCC scoring enclave + reproducible-build Dockerfile
+
+tools/
+  deploy.py             one-command Coston2 deployment
+  mock_enclave.py       stand-in enclave for local development
+
+static/                 marketing site
+  fc-landing.html       /
+  fc-docs*.html         /docs and 15 sub-pages
+  fc-support.html       /support
+  fc-site.css  fc-theme.js  fc-hero.svg
+  app/                  the dashboard, served at /app
+
+docs/architecture.puml  architecture diagram source
+SECURITY.md             threat model + data durability
 ```
 
-On Windows (cmd): use `set VAR=value` instead of `export`, and
-`.venv\Scripts\activate` to activate the venv. `--reload` watches `.py`
-files only  restart manually after editing `.env` or swapping a service file.
-After any restart, `curl localhost:8000/api/config` should show your real
-contract addresses (not `0x000…`) before signing.
+---
 
-## Deploy to Coston2 (one command)
+## Running it locally
 
 ```bash
-export DEPLOYER_PRIVATE_KEY=0x...   # fresh key, fund at https://faucet.flare.network/coston2
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+pip install -r requirements.txt
+copy .env.example .env          # then fill it in
+```
+
+Two processes:
+
+```bash
+# 1. mock enclave (until Confidential Space is deployed)
+python tools/mock_enclave.py     # prints {signer, codeHash}
+
+# 2. the app
+uvicorn app.main:app --reload    # http://localhost:8000
+```
+
+| Route | Page |
+|---|---|
+| `/` | Landing |
+| `/docs` | Documentation (multi-page) |
+| `/support` | Support + contact form |
+| `/app` | Dashboard |
+| `/api-docs` | Swagger (moved, `/docs` is the docs site) |
+| `/__routes` | Build/health check |
+
+On Windows use `set VAR=value` rather than `export`. `--reload` only watches
+`.py` files, so restart manually after editing `.env`.
+
+---
+
+## Deploying the contracts
+
+```bash
+set DEPLOYER_PRIVATE_KEY=0x...   # fund at https://faucet.flare.network/coston2
 python tools/deploy.py
 ```
 
-Deploys all four contracts (pool wired to the real FtsoV2 via the
-FlareContractRegistry), funds the pool with 1M mock FXRP, registers the mock
-enclave's TEE signer, and writes every address into `.env`. Contract ABIs and
-bytecode are pre-compiled in `contracts/artifacts.json` (solc 0.8.26,
-optimizer 200 runs) no toolchain needed.
+Deploys all four contracts (the pool wired to the real FtsoV2 via the
+FlareContractRegistry), funds the pool with mock FXRP, registers the enclave's
+TEE signer, and writes every address into `.env`. Contract ABIs and bytecode
+are pre-compiled in `contracts/artifacts.json` — no Solidity toolchain needed.
 
-Week 5: deploy the Go extension to Confidential Space, register it in
-TeeExtensionRegistry/TeeMachineRegistry, point `ENCLAVE_URL` at it, set
-`EXPECTED_CODE_HASH` to the reproducible-build hash, and call
-`registerTeeSigner` with the attested key.
+---
 
 ## How the privacy model works
 
-- **Identity**: only `keccak(flareAddr, xrplAddr, nonce)` goes on-chain. The
-  preimage is disclosed to the enclave alone, which recomputes and checks it.
-  The GemWallet challenge is **domain-bound** (EIP-712-style): it commits to
-  chainId + the IdentityLinkRegistry address plus a single-use nonce, so a
-  captured signature can't be replayed on another chain or a copied contract.
-- **History**: FDC Merkle proofs are fetched from the DA layer and forwarded
-  to the TEE never verified by a public contract. Only Merkle *roots* exist
+- **Identity** — only `keccak(flare, xrpl, nonce)` goes on-chain. The challenge
+  is domain-bound (EIP-712 style: chainId + registry address + single-use
+  nonce), so a captured signature can't be replayed elsewhere.
+- **History** — FDC Merkle proofs are fetched from the DA layer and forwarded
+  to the enclave, never verified by a public contract. Only roots exist
   on-chain.
-- **Output**: the enclave signs `(subject, score, expiry, codeHash)`.
+- **Scoring** — the enclave signs `(subject, score, expiry, codeHash)`.
   `CreditRegistry` accepts a score only if the signature recovers to the key
-  whitelisted for that exact code hash  trust the code, not the operator.
+  whitelisted for that exact code hash — trust the code, not the operator.
 
-## Anti-gaming (it's a loan product  every input is adversarial)
+---
 
-The enclave enforces these rules; see `SECURITY.md` for the full threat model
-(14 vectors mapped, plus honest v1 limitations):
+## Scoring model (v1)
 
-- **Ownership**  a proof only counts if the payment was *sent from* the bound
-  XRPL address (`keccak(xrplAddr) == sourceAddressHash`); a stranger's tx
-  scores nothing.
-- **Merkle verification**  the Go enclave verifies each proof against the
-  on-chain FDC round root before scoring (mock skips this).
-- **Dedup**  the same transaction counts once, however many times its proof
-  is resubmitted.
-- **No self-payments**  payments where receiver == sender are discarded.
-- **Volume cap**  capped per counterparty (100 XRP), so ping-ponging funds
-  between two wallets can't farm the volume component.
-- **Wallet-age gate**  age points require the oldest attested tx to be
-  > 30 days old; a fresh wallet can't instantly score.
-- **Signed scores**  `CreditRegistry` accepts a score only from the TEE key
-  whitelisted for that exact code hash; tampered signatures revert.
+Deliberately simple and fully explainable — the app shows the breakdown factor
+by factor.
 
-The frontend also blocks recomputing an unchanged proof set while a score is
-still valid (allowed again after a new attestation or once the score expires),
-rate-limits identity/verifier calls, and de-dupes proofs on load.
+| Factor | Max | Earned by |
+|---|---|---|
+| Base | 400 | A valid enclave-signed score existing |
+| Transaction history | 200 | 40 points per unique attested payment |
+| Volume | 200 | 35 points per 25 XRP moved, capped at 100 XRP per counterparty |
+| Wallet age | 100 | Oldest attested transaction older than 30 days |
+| Repayment record | 100 | Clean repayment history in the pool |
 
-## API surface
+Maximum 1000; **700** unlocks the reduced collateral ratio. Scores carry a
+30-day validity window, after which the pool falls back to 150%.
 
-| Route | Purpose |
-|---|---|
-| `POST /api/identity/challenge` | issue XRPL signing challenge |
-| `POST /api/identity/verify` | verify GemWallet signature → bindingHash |
-| `GET /api/identity/{addr}` | on-chain link status |
-| `POST /api/fdc/prepare` | verifier → abiEncodedRequest + fee |
-| `POST /api/fdc/request` | pay fee, submit to FdcHub, return round id |
-| `POST /api/fdc/proof` | poll DA layer for Merkle proof |
-| `POST /api/score/compute` | proofs + binding → enclave → signed envelope |
-| `POST /api/score/submit` | relay envelope to CreditRegistry |
-| `GET /api/score/{addr}` | current score / validity |
-| `GET /api/market/prices` | FTSOv2 FLR/XRP/BTC vs USD |
-| `GET /api/lending/{addr}` | position, ratio, borrowing power |
-| `GET /api/config` | public config for the frontend (no secrets) |
+---
 
-## Judging-criteria map
+## Anti-gaming
 
-- **Usefulness**: undercollateralized lending is DeFi's unsolved problem; the
-  pool is a working consumer, not an oracle demo
-- **Integration quality**: FDC + FCC + FTSO + FAssets  impossible elsewhere
-- **New work**: everything in this repo, built during the program
-- **Roadmap**: richer scoring, BTC/DOGE history via additional FDC sources,
-  institutional selective-disclosure reports
+Every piece of data is verified before it contributes to a credit score. The enclave enforces the following protections:
 
-## Notes / known gaps
+- **Ownership** — a proof counts only if the payment was sent *from* the bound
+  XRPL address; someone else's transaction scores nothing.
+- **Merkle verification** — proofs checked against the on-chain FDC root.
+- **Dedup** — one transaction counts once, however often it's resubmitted.
+- **No self-payments** — receiver == sender is discarded.
+- **Volume cap** — 100 XRP per counterparty, so wash trading can't farm volume.
+- **Wallet-age gate** — age points need the oldest attested tx > 30 days.
+- **Signed scores only** — tampered signatures revert on-chain.
 
-- The mock enclave signs with a dev key; only the real Go enclave in Confidential
-  Space does Merkle verification + code-hash attestation. Testnet only until then.
-- `INSTRUCTION_SENDER_ABI` in `app/chains.py` must be kept in sync with the
-  contract your fce-extension-scaffold generates
-- Challenge store + rate limiter are in-memory  swap for Redis before
-  multi-instance deploys
-- The lending pool skips interest accrual; add it post-hackathon
-- Repayment flag is static in v1; the Go enclave TODO reads Repaid/Liquidated
-  events so liquidated borrowers lose the component (see SECURITY.md #3)
-- One XRPL history can back multiple Flare bindings (privacy/uniqueness
-  trade-off)  documented in SECURITY.md with v2 mitigations
-- Verify current verifier/DA-layer URLs and API-key policy against the Flare
-  docs before demo day  testnet endpoints occasionally rotate
+The frontend prevents unnecessary recalculations, rate limits verification requests, and automatically removes duplicate proofs.
 
-## Repository layout
+Full threat model, including limitations: **`SECURITY.md`**.
+
+---
+
+## Support email (Resend)
 
 ```
-app/            FastAPI backend (routes, services, chain plumbing)
-contracts/      Solidity + pre-compiled artifacts.json
-enclave-go/     real FCC scoring enclave (+ reproducible-build Dockerfile)
-tools/          deploy.py (one-command Coston2 deploy), mock_enclave.py
-static/         zero-build frontend (index.html, app.js, styles.css)
-SECURITY.md     threat model  14 vectors + v1 limitations
+RESEND_API_KEY=re_xxxxxxxx
+SUPPORT_FROM=FlareCredit <support@yourdomain.com>
+SUPPORT_TO=you@yourdomain.com
 ```
+
+Each submission sends a team notification (reply-to = the sender) and a
+branded auto-reply. Includes rate limiting and a bot honeypot.
+
+---
+
+## Known limitations
+
+- **The production enclave is still in development.** Version one uses a development signing key for testing. Full confidential scoring and code attestation will be available with the Go enclave running in Flare Confidential Computing.
+- **The backend is designed for a single server.** Multi-server deployments will use Redis for shared challenges and rate limiting.
+- **Interest has not been implemented yet.** Loans do not currently accrue interest.
+- **Repayment history is not yet included.** Version one does not adjust credit scores based on loan repayments or liquidations.
+- **One payment history can currently be linked to more than one Flare wallet.** We're evaluating solutions that preserve privacy while preventing duplicate bindings.
+- **FDC proofs should be backed up.** They are not stored on chain, and if they are lost after the verification window has passed, some older transactions may no longer be available for verification. FlareCredit includes backup and restore to help prevent this.
+- **Some Flare testnet services may change.** Testnet verifier and Data Availability endpoints can be updated over time and should be confirmed before demonstrations.
+
+---
+
+## Roadmap
+
+- **Production Confidential Computing** with full enclave attestation.
+- **Repayment-based scoring** that rewards successful repayments and reflects liquidations.
+- **Support for BTC and DOGE payment history** through additional Flare Data Connector attestation types.
+- **Selective disclosure for institutions**, allowing borrowers to share only the credit information required for lending.
+
+---
+
