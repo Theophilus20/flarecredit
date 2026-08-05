@@ -167,4 +167,4 @@ async def score(req: Request):
 
 if __name__ == "__main__":
     print(json.dumps({"signer": SIGNER.address, "codeHash": CODE_HASH}, indent=2))
-    uvicorn.run(app, host="0.0.0.0", port=9090)
+    uvicorn.run(app, host="::", port=int(os.environ.get("PORT", 9090)))
