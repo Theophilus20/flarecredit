@@ -10,7 +10,7 @@ Deployed on **Coston2 testnet** (chain ID 114).
 
 ---
 
-## Deployed contracts — Coston2 testnet
+## Deployed contracts  Coston2 testnet
 
 All contracts are verifiable on the
 [Coston2 explorer](https://coston2-explorer.flare.network).
@@ -24,8 +24,8 @@ All contracts are verifiable on the
 
 Protocol contracts (`FdcHub`, `FtsoV2`, `FdcVerification`) are resolved at
 runtime through the **FlareContractRegistry** at
-`0xaD67FE66660Fb8dFE9d6b1b4240d8650e30F6019` — the same address on every Flare
-network — so no protocol address is hardcoded.
+`0xaD67FE66660Fb8dFE9d6b1b4240d8650e30F6019`  the same address on every Flare
+network  so no protocol address is hardcoded.
 
 Live addresses are also shown in the app under **Settings → Deployment**, each
 linking through to the explorer.
@@ -115,27 +115,27 @@ python tools/deploy.py
 Deploys all four contracts (the pool wired to the real FtsoV2 via the
 FlareContractRegistry), funds the pool with mock FXRP, registers the enclave's
 TEE signer, and writes every address into `.env`. Contract ABIs and bytecode
-are pre-compiled in `contracts/artifacts.json` — no Solidity toolchain needed.
+are pre-compiled in `contracts/artifacts.json`  no Solidity toolchain needed.
 
 ---
 
 ## How the privacy model works
 
-- **Identity** — only `keccak(flare, xrpl, nonce)` goes on-chain. The challenge
+- **Identity**  only `keccak(flare, xrpl, nonce)` goes on-chain. The challenge
   is domain-bound (EIP-712 style: chainId + registry address + single-use
   nonce), so a captured signature can't be replayed elsewhere.
-- **History** — FDC Merkle proofs are fetched from the DA layer and forwarded
+- **History**  FDC Merkle proofs are fetched from the DA layer and forwarded
   to the enclave, never verified by a public contract. Only roots exist
   on-chain.
-- **Scoring** — the enclave signs `(subject, score, expiry, codeHash)`.
+- **Scoring**  the enclave signs `(subject, score, expiry, codeHash)`.
   `CreditRegistry` accepts a score only if the signature recovers to the key
-  whitelisted for that exact code hash — trust the code, not the operator.
+  whitelisted for that exact code hash  trust the code, not the operator.
 
 ---
 
 ## Scoring model (v1)
 
-Deliberately simple and fully explainable — the app shows the breakdown factor
+Deliberately simple and fully explainable  the app shows the breakdown factor
 by factor.
 
 | Factor | Max | Earned by |
@@ -155,14 +155,14 @@ Maximum 1000; **700** unlocks the reduced collateral ratio. Scores carry a
 
 Every piece of data is verified before it contributes to a credit score. The enclave enforces the following protections:
 
-- **Ownership** — a proof counts only if the payment was sent *from* the bound
+- **Ownership**  a proof counts only if the payment was sent *from* the bound
   XRPL address; someone else's transaction scores nothing.
-- **Merkle verification** — proofs checked against the on-chain FDC root.
-- **Dedup** — one transaction counts once, however often it's resubmitted.
-- **No self-payments** — receiver == sender is discarded.
-- **Volume cap** — 100 XRP per counterparty, so wash trading can't farm volume.
-- **Wallet-age gate** — age points need the oldest attested tx > 30 days.
-- **Signed scores only** — tampered signatures revert on-chain.
+- **Merkle verification**  proofs checked against the on-chain FDC root.
+- **Dedup**  one transaction counts once, however often it's resubmitted.
+- **No self-payments**  receiver == sender is discarded.
+- **Volume cap**  100 XRP per counterparty, so wash trading can't farm volume.
+- **Wallet-age gate**  age points need the oldest attested tx > 30 days.
+- **Signed scores only**  tampered signatures revert on-chain.
 
 The frontend prevents unnecessary recalculations, rate limits verification requests, and automatically removes duplicate proofs.
 
