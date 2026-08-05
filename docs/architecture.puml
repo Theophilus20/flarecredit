@@ -1,0 +1,108 @@
+@startuml FlareCredit
+!$PLANTUML_LIMIT_SIZE=16384
+' FlareCredit  architecture (staged top-down flow, minimal crossings)
+' Best quality: export as SVG (right-click -> Export Current Diagram -> svg).
+' For PNG: the dpi + limit-size lines below keep it crisp and uncropped.
+
+skinparam dpi 200
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam nodesep 55
+skinparam ranksep 65
+skinparam ArrowColor #C2124A
+skinparam ArrowFontColor #17131F
+skinparam ArrowThickness 1.2
+
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #E62058
+  FontColor #17131F
+  RoundCorner 12
+}
+skinparam node {
+  BackgroundColor #FEF2F6
+  BorderColor #E62058
+  FontColor #17131F
+}
+skinparam database {
+  BackgroundColor #FFFFFF
+  BorderColor #E62058
+}
+skinparam actorStyle awesome
+
+title FlareCredit private credit scoring on Flare\n<size:11>Prove you're creditworthy without doxxing your wallet</size>
+
+' ================= top: client =================
+actor "XRP holder" as user
+
+package "Browser" as pb {
+  rectangle "Frontend\n(viem + GemWallet)" as fe
+  rectangle "MetaMask\n(Coston2)" as mm
+  rectangle "GemWallet\n(XRPL)" as gem
+}
+
+' ================= middle: backend =================
+package "Backend FastAPI / web3.py" as bk {
+  rectangle "Identity service\nchallenge · verify" as idsvc
+  rectangle "FDC orchestrator\nprepare · request · proof" as fdcsvc
+  rectangle "Enclave relay\n+ envelope verify" as encrelay
+}
+
+' ================= bottom: flare + external =================
+package "Flare Coston2" as fl {
+  node "FDC\nFdcHub · Verifier · DA" as fdc
+  node "FCC enclave\n(Confidential Space)" as enclave
+  node "FTSOv2\nFLR/USD · XRP/USD" as ftso
+  rectangle "IdentityLinkRegistry" as idreg
+  rectangle "CreditRegistry" as creg
+  rectangle "FxrpLendingPool\n150% -> 120%" as pool
+  database "FXRP (FAssets)" as fxrp
+}
+
+node "XRPL testnet" as xrpl
+
+' keep the three layers vertically stacked
+user -[hidden]down- pb
+pb   -[hidden]down- bk
+bk   -[hidden]down- fl
+
+' ---- 1. identity (browser <-> identity svc <-> registry) ----
+user --> fe
+fe   --> gem   : 1· sign challenge
+gem  --> idsvc : signature + pubkey
+idsvc --> fe   : bindingHash
+fe   --> mm    : 2· link(bindingHash)
+mm   --> idreg : store hash only
+
+' ---- 2. history attestation ----
+user ..> xrpl  : makes payments
+fe   --> fdcsvc : 3· XRPL tx hash
+fdcsvc --> fdc  : request (pay fee)
+fdc  ..> xrpl   : verify tx
+fdc  --> fdcsvc : Merkle proof
+
+' ---- 3. private scoring ----
+fe    --> encrelay : 4· proofs + binding
+encrelay --> enclave : /score
+enclave --> fdc   : verify vs on-chain root
+enclave --> idreg : check binding
+enclave --> encrelay : signed score
+encrelay --> creg : 5· submitScore
+
+' ---- 4. consume ----
+fe   --> mm   : 6· deposit / borrow
+mm   --> pool
+pool --> creg : getScore -> ratio
+pool --> ftso : price
+pool --> fxrp : lend FXRP
+
+note bottom of creg
+  Only hashes, scores, and Merkle roots
+  are stored on-chain. The XRPL address,
+  transaction history, and wallet mapping
+  stay private.
+end note
+
+@enduml

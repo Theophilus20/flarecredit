@@ -1,0 +1,7 @@
+fastapi==0.115.0
+uvicorn[standard]==0.31.0
+web3==7.3.0
+xrpl-py==3.0.0
+httpx>=0.18.0,<1
+pydantic-settings==2.5.2
+python-dotenv==1.0.1

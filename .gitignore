@@ -1,0 +1,71 @@
+# ---------------------------------------------------------------- secrets
+# NEVER commit these. .env holds a funded private key and the Resend API key.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# ---------------------------------------------------------------- python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# ---------------------------------------------------------------- node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ---------------------------------------------------------------- go (enclave)
+enclave-go/enclave
+enclave-go/*.exe
+vendor/
+
+# ---------------------------------------------------------------- editors / os
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------- project
+# Install guides and scratch files that shouldn't ship in the repo
+FC-INSTALL.md
+dash-index.html
+main_snippet.py
+*.bak
+*.tmp
+
+# PlantUML / diagram exports (keep the .puml source, ignore renders)
+docs/*.png
+docs/*.svg
+!docs/architecture.puml
+
+# user backups downloaded from the app (contain private preimages)
+flarecredit-backup-*.json
+
+# local logs
+*.log
+logs/

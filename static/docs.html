@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Documentation  FlareCredit</title>
+<meta name="description" content="FlareCredit documentation: how private credit scoring works on Flare, the scoring model, security guarantees, contract addresses, and API reference." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/site.css" />
+<script src="/theme.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="ic-x" viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
+  <symbol id="ic-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M20.317 4.37a19.8 19.8 0 0 0-4.885-1.515.07.07 0 0 0-.073.035c-.211.375-.445.865-.608 1.25a18.3 18.3 0 0 0-5.487 0 12.6 12.6 0 0 0-.617-1.25.07.07 0 0 0-.073-.035A19.7 19.7 0 0 0 3.677 4.37a.06.06 0 0 0-.03.025C.533 9.046-.32 13.58.099 18.058a.08.08 0 0 0 .031.055 19.9 19.9 0 0 0 5.993 3.03.08.08 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13 13 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10 10 0 0 0 .372-.292.07.07 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.07.07 0 0 1 .078.009q.181.15.373.293a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.08.08 0 0 0 .084.028 19.8 19.8 0 0 0 6.002-3.03.08.08 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.03M8.02 15.331c-1.182 0-2.157-1.085-2.157-2.419s.956-2.419 2.157-2.419c1.21 0 2.176 1.095 2.157 2.42 0 1.333-.956 2.418-2.157 2.418m7.975 0c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.095 2.157 2.42 0 1.333-.946 2.418-2.157 2.418"/></symbol>
+  <symbol id="ic-telegram" viewBox="0 0 24 24"><path fill="currentColor" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 7.897c.19-.4.397.9.174.223l-2.1 9.913c-.16.72-.586.897-1.187.558l-3.28-2.418-1.58 1.522c-.176.176-.324.324-.664.324l.235-3.348 6.09-5.502c.265-.235-.058-.367-.41-.132L6.79 13.13l-3.242-1.013c-.705-.22-.717-.705.147-1.043l12.658-4.88c.588-.213 1.102.14.6.703z"/></symbol>
+  <symbol id="ic-mail" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3 6.5h18v11H3z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="m3 7 9 6 9-6"/></symbol>
+  <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M20 13.5A8 8 0 0 1 10.5 4 8 8 0 1 0 20 13.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2M12 19.5v2M4.9 4.9 6.3 6.3M17.7 17.7l1.4 1.4M2.5 12h2M19.5 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="ic-flare" viewBox="0 0 48 48"><path fill="currentColor" d="M14.4 8h27.2l-3.1 8.2H11.3zM9.6 20.6h27.2l-3.1 8.2H6.5zM4.8 33.2H32l-3.1 8.2H1.7z"/></symbol>
+</defs></svg>
+
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="brand"><svg class="mark"><use href="#ic-flare"/></svg>Flare<span>Credit</span></a>
+    <nav class="nav-links">
+      <a href="/#how">How it works</a><a href="/#why">Why Flare</a>
+      <a href="/docs" class="active">Docs</a><a href="/support">Support</a>
+    </nav>
+    <button class="theme-btn" data-theme-icon aria-label="Toggle dark mode"></button>
+    <a href="/app" class="btn btn-sm">Launch app</a>
+  </div>
+</header>
+
+<div class="wrap docs-layout">
+  <aside class="docs-nav">
+    <strong>Introduction</strong>
+    <a href="#overview">Overview</a>
+    <a href="#concepts">Core concepts</a>
+    <strong>Using FlareCredit</strong>
+    <a href="#getting-started">Getting started</a>
+    <a href="#identity">Linking your identity</a>
+    <a href="#attestations">Attesting history</a>
+    <a href="#scoring">Getting your score</a>
+    <a href="#borrowing">Borrowing FXRP</a>
+    <strong>How it works</strong>
+    <a href="#architecture">Architecture</a>
+    <a href="#score-model">Scoring model</a>
+    <a href="#privacy">Privacy model</a>
+    <a href="#security">Security & anti-gaming</a>
+    <strong>Reference</strong>
+    <a href="#contracts">Contracts</a>
+    <a href="#api">API reference</a>
+    <a href="#faq">FAQ</a>
+  </aside>
+
+  <main class="docs-body">
+    <h1>Documentation</h1>
+    <p class="lede">Everything you need to understand, verify, and use FlareCredit  private credit scoring for XRP holders, built on Flare.</p>
+
+    <h2 id="overview">Overview</h2>
+    <p>FlareCredit answers a question DeFi has never been able to ask: <strong>can you prove you're a good borrower without showing anyone your finances?</strong></p>
+    <p>Today, lending protocols know nothing about you, so they demand more collateral than the loan is worth  commonly 150%. That's capital sitting idle purely because trust can't be established. The obvious fix, publishing your transaction history, is one most people and every institution will refuse.</p>
+    <p>FlareCredit takes a third path. Your XRPL payment history is independently verified by Flare's Data Connector, handed privately to a confidential enclave, and reduced to a single signed number between 0 and 1000. That number goes on-chain. Your address, your transactions, and even the link between your XRPL and Flare wallets do not.</p>
+    <div class="callout"><p><strong>In one line:</strong> prove you're creditworthy without doxxing your wallet.</p></div>
+
+    <h2 id="concepts">Core concepts</h2>
+    <table>
+      <tr><th>Term</th><th>What it means here</th></tr>
+      <tr><td><strong>Credit score</strong></td><td>A number from 0 to 1000 derived from your verified XRPL history, valid for 30 days, signed by the scoring enclave.</td></tr>
+      <tr><td><strong>Identity binding</strong></td><td>Cryptographic proof that a Flare address and an XRPL address belong to the same person  stored on-chain only as a hash.</td></tr>
+      <tr><td><strong>Attestation</strong></td><td>An FDC-issued Merkle proof that a specific XRPL transaction genuinely occurred.</td></tr>
+      <tr><td><strong>Enclave (TEE)</strong></td><td>A Trusted Execution Environment where your data is processed in isolation. Even the operator can't read it.</td></tr>
+      <tr><td><strong>Code hash</strong></td><td>A fingerprint of the exact enclave build. The registry accepts scores only from whitelisted hashes.</td></tr>
+      <tr><td><strong>Collateral ratio</strong></td><td>How much you must lock up to borrow. 150% by default; 120% at a score of 700 or above.</td></tr>
+    </table>
+
+    <h2 id="getting-started">Getting started</h2>
+    <p>You'll need two wallets and a few minutes. Everything runs on testnet, so nothing costs real money.</p>
+    <h3>Prerequisites</h3>
+    <ul>
+      <li><strong>MetaMask</strong> with the Coston2 network (chain ID 114)  the app adds it automatically on connect.</li>
+      <li><strong>C2FLR test tokens</strong> from the <a href="https://faucet.flare.network/coston2" target="_blank" rel="noopener">Coston2 faucet</a>, for gas and collateral.</li>
+      <li><strong>GemWallet</strong>, an XRPL browser wallet, funded on XRPL testnet.</li>
+    </ul>
+    <h3>The flow at a glance</h3>
+    <ol>
+      <li>Connect MetaMask and link your XRPL identity (one signature, one transaction).</li>
+      <li>Attest one or more XRPL payments you sent.</li>
+      <li>Compute your score inside the enclave and register it on-chain.</li>
+      <li>Deposit collateral and borrow FXRP at your score's collateral ratio.</li>
+    </ol>
+
+    <h2 id="identity">Linking your identity</h2>
+    <p>Before your history can count, you must prove the XRPL address is yours. This happens in three steps on the Identity page.</p>
+    <p>First, connect MetaMask  this is the Flare address your score will be attached to. Second, click <strong>Sign with GemWallet</strong>. The backend issues a one-time challenge containing a random nonce, the chain ID, and the registry contract address; GemWallet signs it. The backend verifies both that the signature is valid and that the signing public key actually derives the XRPL address being claimed.</p>
+    <p>Third, click <strong>Link on Coston2</strong>. This stores <code>keccak(flareAddress, xrplAddress, nonce)</code> in the <code>IdentityLinkRegistry</code> contract. That hash is meaningless to observers  only someone who already knows all three inputs can verify it, and the enclave is the only party that receives them.</p>
+    <div class="callout"><p><strong>Why a new nonce each time?</strong> Fresh nonces make each signature single-use, preventing replay. Re-linking without re-signing reuses your existing binding; re-signing mints a new one. Both are safe.</p></div>
+
+    <h3>Unlinking and rebinding</h3>
+    <p>You can unlink at any time from the Identity page, which calls <code>unlink()</code> on-chain. To bind a different XRPL address, switch wallets in GemWallet, re-sign, then link again.</p>
+
+    <h2 id="attestations">Attesting history</h2>
+    <p>An attestation is independent proof that an XRPL transaction happened. FlareCredit uses the FDC <strong>Payment</strong> attestation type.</p>
+    <p>On the Attestations page, paste the hash of an XRPL payment <strong>sent from your linked address</strong>. Behind the scenes: the backend asks an FDC verifier to encode the request, submits it to <code>FdcHub</code> with the required fee, and waits for the voting round to finalise. Around 100 independent data providers each check the transaction against their own XRPL nodes and commit a Merkle root of all confirmed attestations on-chain.</p>
+    <p>Once the round closes, the Merkle proof is fetched from the Data Availability layer and held in your browser. Expect this to take roughly two to three minutes.</p>
+    <div class="callout"><p><strong>Important:</strong> the payment must have been sent <em>from</em> the XRPL address you linked. Proofs for anyone else's transactions are rejected by the enclave and contribute nothing.</p></div>
+
+    <h2 id="scoring">Getting your score</h2>
+    <p>Click <strong>Compute private score</strong> and your collected proofs, plus the binding preimage, are sent to the scoring enclave. Inside the TEE, the enclave verifies each Merkle proof against the on-chain root, recomputes your binding hash and compares it to what the registry stores, applies the scoring model, and signs the result.</p>
+    <p>The signed envelope contains your address, the score, an expiry 30 days out, and the enclave's code hash. It's submitted to <code>CreditRegistry</code>, which recovers the signature and accepts it only if the signer matches the key whitelisted for that exact code hash.</p>
+    <p>Scores can be recomputed whenever you attest new history, or once the current score expires. Recomputing with an unchanged set of proofs is blocked  it would only produce the same number.</p>
+
+    <h2 id="borrowing">Borrowing FXRP</h2>
+    <p>The lending pool is collateralized: you lock C2FLR and borrow FXRP against it. Your score determines how much collateral is required.</p>
+    <pre><code>borrowing power = (collateral value in USD ÷ collateral ratio) ÷ XRP price</code></pre>
+    <p>With a score below 700 the ratio is 150%, so $150 of collateral supports $100 of debt. At 700 or above the ratio drops to 120%  the same collateral now supports roughly 25% more borrowing. All values are priced live through FTSOv2 feeds.</p>
+    <p>Repaying builds your repayment record. Positions that fall below the required ratio can be liquidated, with a 5% bonus paid to the liquidator.</p>
+
+    <h2 id="architecture">Architecture</h2>
+    <p>FlareCredit has four moving parts, each mapped to a Flare protocol.</p>
+    <h3>1 · Identity layer</h3>
+    <p>A domain-bound challenge signed by the XRPL wallet, verified off-chain, committed on-chain as a hash in <code>IdentityLinkRegistry</code>.</p>
+    <h3>2 · Attestation layer (FDC)</h3>
+    <p>Payment attestations requested through <code>FdcHub</code>, with Merkle proofs retrieved from the DA layer and routed to the enclave rather than to a public verifier contract.</p>
+    <h3>3 · Scoring layer (FCC)</h3>
+    <p>A Go extension running in GCP Confidential Space. It performs proof verification, binding verification, and scoring, then signs <code>keccak(subject, score, expiry, codeHash)</code> with its attested key.</p>
+    <h3>4 · Consumption layer (FTSO + FAssets)</h3>
+    <p><code>FxrpLendingPool</code> reads the score from <code>CreditRegistry</code> to set collateral ratios and prices everything through FTSOv2, lending FXRP brought over by FAssets.</p>
+
+    <h2 id="score-model">Scoring model</h2>
+    <p>Version 1 is deliberately simple and fully explainable  you can always see exactly why your score is what it is, factor by factor, in the app.</p>
+    <table>
+      <tr><th>Factor</th><th>Max</th><th>How it's earned</th></tr>
+      <tr><td>Base</td><td>400</td><td>Granted once a valid enclave-signed score exists.</td></tr>
+      <tr><td>Transaction history</td><td>200</td><td>40 points per unique attested payment.</td></tr>
+      <tr><td>Volume</td><td>200</td><td>35 points per 25 XRP moved, capped at 100 XRP per counterparty.</td></tr>
+      <tr><td>Wallet age</td><td>100</td><td>Granted when the oldest attested transaction is more than 30 days old.</td></tr>
+      <tr><td>Repayment record</td><td>100</td><td>Clean repayment history in the FlareCredit lending pool.</td></tr>
+    </table>
+    <p>The maximum is 1000, and 700 is the threshold that unlocks the reduced collateral ratio. Every score carries a 30-day validity window, after which the pool falls back to the default ratio until you recompute.</p>
+
+    <h2 id="privacy">Privacy model</h2>
+    <p>Privacy in FlareCredit is structural, not a promise. Here is precisely what each party can see.</p>
+    <table>
+      <tr><th>Party</th><th>Can see</th><th>Cannot see</th></tr>
+      <tr><td>Public chain</td><td>Binding hashes, scores, Merkle roots, pool positions</td><td>Your XRPL address, your transactions, the wallet mapping</td></tr>
+      <tr><td>Backend</td><td>Addresses and proofs in transit</td><td>Nothing it could forge  it holds no TEE key</td></tr>
+      <tr><td>Enclave</td><td>Everything needed to score</td><td> (but its exact code is publicly verifiable)</td></tr>
+      <tr><td>Lending pool</td><td>Your score and its validity</td><td>Any detail of the history behind it</td></tr>
+    </table>
+    <p>The binding preimage  your XRPL address and nonce  is stored only in your browser and transmitted only to the enclave.</p>
+
+    <h2 id="security">Security &amp; anti-gaming</h2>
+    <p>A credit score that can be farmed is worthless to a lender, so the enclave enforces strict rules on what counts.</p>
+    <ul>
+      <li><strong>Ownership</strong>  a proof counts only if the payment was sent from your bound XRPL address. Borrowing a whale's transaction hash scores nothing.</li>
+      <li><strong>Merkle verification</strong>  every proof is checked against the on-chain FDC root before scoring.</li>
+      <li><strong>Deduplication</strong>  the same transaction counts once, regardless of how many times it's submitted.</li>
+      <li><strong>No self-payments</strong>  transfers where sender and receiver match are discarded.</li>
+      <li><strong>Per-counterparty volume cap</strong>  ping-ponging funds between two wallets saturates a single cap instead of inflating volume.</li>
+      <li><strong>Wallet-age gate</strong>  a freshly created wallet cannot instantly earn age points.</li>
+      <li><strong>Attested signatures</strong>  <code>CreditRegistry</code> accepts scores only from the key whitelisted for a specific enclave code hash; tampered signatures revert.</li>
+      <li><strong>Domain-bound challenges</strong>  identity signatures commit to the chain ID and registry address, so they cannot be replayed elsewhere.</li>
+    </ul>
+    <div class="callout"><p><strong>Known limitation:</strong> because bindings are hashed, one XRPL history could back more than one Flare address. Mitigations  sealed enclave state or a uniqueness registry  are a privacy trade-off currently under evaluation.</p></div>
+
+    <h2 id="contracts">Contracts</h2>
+    <p>All contracts are deployed on <strong>Flare Coston2 testnet</strong> (chain ID 114) and can be inspected on the <a href="https://coston2-explorer.flare.network" target="_blank" rel="noopener">Coston2 explorer</a>.</p>
+    <table>
+      <tr><th>Contract</th><th>Purpose</th></tr>
+      <tr><td><code>IdentityLinkRegistry</code></td><td>Stores the hashed XRPL↔Flare binding.</td></tr>
+      <tr><td><code>CreditRegistry</code></td><td>Holds TEE-signed scores with code-hash whitelisting.</td></tr>
+      <tr><td><code>FxrpLendingPool</code></td><td>Score-gated FXRP lending, priced by FTSOv2.</td></tr>
+      <tr><td><code>FXRP</code></td><td>The borrowable asset (FAssets-bridged XRP).</td></tr>
+    </table>
+    <p>Live addresses are shown in the app under <strong>Settings → Deployment</strong>, each linking to the explorer.</p>
+
+    <h2 id="api">API reference</h2>
+    <p>The backend exposes a small REST surface. All responses are JSON.</p>
+    <table>
+      <tr><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><code>POST /api/identity/challenge</code></td><td>Issue a domain-bound signing challenge.</td></tr>
+      <tr><td><code>POST /api/identity/verify</code></td><td>Verify an XRPL signature and return the binding hash.</td></tr>
+      <tr><td><code>GET /api/identity/{address}</code></td><td>Read on-chain link status.</td></tr>
+      <tr><td><code>POST /api/fdc/prepare</code></td><td>Encode an attestation request and return the fee.</td></tr>
+      <tr><td><code>POST /api/fdc/request</code></td><td>Submit the request to FdcHub.</td></tr>
+      <tr><td><code>POST /api/fdc/proof</code></td><td>Poll the DA layer for the Merkle proof.</td></tr>
+      <tr><td><code>POST /api/score/compute</code></td><td>Send proofs to the enclave and receive a signed score.</td></tr>
+      <tr><td><code>GET /api/score/{address}</code></td><td>Read the current score and validity.</td></tr>
+      <tr><td><code>GET /api/market/prices</code></td><td>Live FTSOv2 price feeds.</td></tr>
+      <tr><td><code>GET /api/lending/{address}</code></td><td>Position, collateral ratio, and borrowing power.</td></tr>
+    </table>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Does anyone see my XRPL address?</h3>
+    <p>Only the scoring enclave, which processes it in isolation. Nothing on-chain reveals it, and no observer can derive it from the stored hash.</p>
+    <h3>Why do I still need to deposit collateral?</h3>
+    <p>FlareCredit is a step toward undercollateralized lending, not a leap. A score reduces how much collateral you need  from 150% to 120%  rather than removing it. Fully unsecured lending would require off-chain recourse that no anonymous protocol can enforce today.</p>
+    <h3>Why did my score go down?</h3>
+    <p>Scores expire after 30 days. If proofs were rejected  a foreign sender, a duplicate, or a failed payment  the app lists the reason next to your result.</p>
+    <h3>Can I use a different XRPL wallet later?</h3>
+    <p>Yes. Unlink, switch wallets in GemWallet, re-sign, and link again.</p>
+    <h3>Is this on mainnet?</h3>
+    <p>Not yet. FlareCredit currently runs on Coston2 testnet. Mainnet requires the production Confidential Space deployment and an audit.</p>
+
+    <div class="callout" style="margin-top:44px">
+      <p><strong>Still stuck?</strong> Reach the team on the <a href="/support">support page</a>  we usually reply within a day.</p>
+    </div>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <a href="/" class="brand"><svg class="mark"><use href="#ic-flare"/></svg>Flare<span>Credit</span></a>
+      <p class="muted small">Private credit scores for XRP holders, built on Flare. Verified history in, a single number out.</p>
+      <div class="socials">
+        <a href="https://x.com/flarecredit" target="_blank" rel="noopener" aria-label="X / Twitter"><svg><use href="#ic-x"/></svg></a>
+        <a href="https://discord.gg/flarecredit" target="_blank" rel="noopener" aria-label="Discord"><svg><use href="#ic-discord"/></svg></a>
+        <a href="https://t.me/flarecredit" target="_blank" rel="noopener" aria-label="Telegram"><svg><use href="#ic-telegram"/></svg></a>
+        <a href="mailto:flarecreditco@gmail.com" aria-label="Email"><svg><use href="#ic-mail"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div><strong>Product</strong>
+        <a href="/app">Launch app</a><a href="/#how">How it works</a><a href="/#why">Why Flare</a></div>
+      <div><strong>Resources</strong>
+        <a href="/docs">Documentation</a><a href="/docs#security">Security</a><a href="/docs#faq">FAQ</a></div>
+      <div><strong>Contact</strong>
+        <a href="/support">Support</a><a href="mailto:flarecreditco@gmail.com">Email us</a><a href="https://flare.network" target="_blank" rel="noopener">Flare Network ↗</a></div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>© 2026 FlareCredit. All rights reserved.</span>
+    <span class="muted small">Built on Flare · Coston2 testnet · Not financial advice.</span>
+  </div>
+</footer>
+
+</body>
+</html>

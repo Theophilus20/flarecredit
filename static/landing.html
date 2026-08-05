@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FlareCredit  private credit scores for XRP holders</title>
+<meta name="description" content="Prove you're creditworthy without doxxing your wallet. FlareCredit turns your private XRPL history into a verifiable credit score on Flare, unlocking capital-efficient loans." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">Flare<span>Credit</span></a>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#why">Why Flare</a>
+      <a href="#docs">Docs</a>
+      <a href="#support">Support</a>
+    </nav>
+    <a href="/app" class="btn btn-sm">Launch app</a>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="pill">Built on Flare · FDC · FCC · FTSO · FAssets</span>
+      <h1>Prove you're creditworthy<br/><em>without doxxing your wallet.</em></h1>
+      <p class="lead">
+        FlareCredit turns your private XRPL history into a verifiable credit score,
+        computed inside a confidential enclave. A better score unlocks
+        capital-efficient loans  without ever revealing your transactions.
+      </p>
+      <div class="hero-cta">
+        <a href="/app" class="btn">Launch app</a>
+        <a href="#how" class="btn btn-ghost">See how it works</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong>150% → 120%</strong><span>collateral, once you score 700+</span></div>
+        <div><strong>0</strong><span>transactions revealed on-chain</span></div>
+        <div><strong>4</strong><span>Flare protocols, one product</span></div>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="hero-art-glow"></div>
+      <object type="image/svg+xml" data="hero-animation.svg" class="hero-svg" aria-label="FlareCredit animated visual"></object>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHAT IS IT ===================== -->
+<section class="band">
+  <div class="wrap">
+    <h2 class="section-title">What is FlareCredit?</h2>
+    <p class="section-sub">
+      In DeFi, everyone is an anonymous stranger  so every loan demands more
+      collateral than it's worth. Yet millions of XRP holders sit on years of
+      real financial history. FlareCredit lets you <strong>prove that history is
+      yours and that it's real</strong>, privately, and turn it into a credit
+      score that lenders can trust  so you borrow more with less locked up.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="section" id="how">
+  <div class="wrap">
+    <h2 class="section-title">How it works</h2>
+    <p class="section-sub">Four steps. Your wallet stays private the whole way.</p>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Link your identity</h3>
+        <p>Sign a challenge with your XRPL wallet to prove ownership. Only a hash of the link goes on-chain  never your address.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Attest your history</h3>
+        <p>Flare's Data Connector proves your XRPL payments really happened, with Merkle proofs sent privately to the enclave.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Score in a TEE</h3>
+        <p>A confidential enclave verifies the proofs and computes your score, then signs it. The chain only ever sees the number.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h3>Borrow for less</h3>
+        <p>Your score gates the lending pool: reach 700 and your collateral drops from 150% to 120%  same wallet, more borrowing power.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHY FLARE ===================== -->
+<section class="section why" id="why">
+  <div class="wrap">
+    <span class="pill dark">Powered by Flare</span>
+    <h2 class="section-title">Only possible on Flare</h2>
+    <p class="section-sub">FlareCredit is built entirely on Flare's enshrined protocols  no bridges, no oracles, no trusted third parties.</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <h3>FDC</h3>
+        <span class="why-tag">Flare Data Connector</span>
+        <p>Proves your XRPL transactions occurred, with verifiable Merkle proofs  the source of your credit history.</p>
+      </div>
+      <div class="why-card">
+        <h3>FCC</h3>
+        <span class="why-tag">Confidential Computing</span>
+        <p>Scores you inside a Trusted Execution Environment. Trust the code, not the operator  and nothing leaks.</p>
+      </div>
+      <div class="why-card">
+        <h3>FTSO</h3>
+        <span class="why-tag">Time Series Oracle</span>
+        <p>Decentralized price feeds value your collateral and debt, so the lending pool is always fairly priced.</p>
+      </div>
+      <div class="why-card">
+        <h3>FAssets</h3>
+        <span class="why-tag">FXRP</span>
+        <p>Bridged XRP becomes usable DeFi collateral  turning your score into a real lending product.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DOCS ===================== -->
+<section class="section" id="docs">
+  <div class="wrap">
+    <h2 class="section-title">Docs & resources</h2>
+    <p class="section-sub">Everything you need to understand, verify, and build on FlareCredit.</p>
+    <div class="docs-grid">
+      <a class="doc-card" href="#" target="_blank" rel="noopener">
+        <h3>Getting started →</h3>
+        <p>Connect your wallets, link your identity, and generate your first score in minutes.</p>
+      </a>
+      <a class="doc-card" href="#" target="_blank" rel="noopener">
+        <h3>Architecture →</h3>
+        <p>How identity, attestation, the scoring enclave, and the lending pool fit together.</p>
+      </a>
+      <a class="doc-card" href="#" target="_blank" rel="noopener">
+        <h3>Security & threat model →</h3>
+        <p>The anti-gaming rules and privacy guarantees behind a lending-grade credit score.</p>
+      </a>
+      <a class="doc-card" href="#" target="_blank" rel="noopener">
+        <h3>GitHub →</h3>
+        <p>Contracts, backend, the scoring enclave, and the frontend  all open source.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SUPPORT ===================== -->
+<section class="section support" id="support">
+  <div class="wrap support-inner">
+    <div>
+      <h2 class="section-title">Talk to the team</h2>
+      <p class="section-sub">Questions, feedback, or partnership ideas? We'd love to hear from you.</p>
+      <div class="support-links">
+        <a href="mailto:flarecreditco@gmail.com" class="support-chip">✉flarecreditco@gmail.com</a>
+        <a href="#" class="support-chip">↗ Discord</a>
+        <a href="#" class="support-chip">↗ X / Twitter</a>
+        <a href="#" class="support-chip">↗ GitHub Issues</a>
+      </div>
+    </div>
+    <form class="support-form" onsubmit="event.preventDefault(); this.reset(); document.getElementById('sent').style.display='block';">
+      <label>Your email<input type="email" required placeholder="you@example.com" /></label>
+      <label>Message<textarea rows="3" required placeholder="How can we help?"></textarea></label>
+      <button class="btn" type="submit">Send message</button>
+      <p id="sent" class="sent-note">Thanks we'll get back to you soon.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta">
+  <div class="wrap cta-inner">
+    <h2>Your history is worth something.<br/>Prove it  privately.</h2>
+    <a href="/app" class="btn btn-lg">Launch FlareCredit</a>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <a href="#top" class="brand">Flare<span>Credit</span></a>
+      <p class="muted small">Private credit scores for XRP holders, built on Flare.</p>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <strong>Product</strong>
+        <a href="/app">Launch app</a>
+        <a href="#how">How it works</a>
+        <a href="#why">Why Flare</a>
+      </div>
+      <div>
+        <strong>Resources</strong>
+        <a href="#docs">Docs</a>
+        <a href="#">GitHub</a>
+        <a href="#">Security</a>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <a href="mailto:flarecreditco@gmail.com">Email</a>
+        <a href="#">Discord</a>
+        <a href="#">X / Twitter</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>© 2026 FlareCredit. All rights reserved.</span>
+    <span class="muted small">Built on Flare · Coston2 testnet · Not financial advice.</span>
+  </div>
+</footer>
+
+</body>
+</html>
