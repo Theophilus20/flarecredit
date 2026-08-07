@@ -361,3 +361,20 @@ html[data-theme="dark"] .btn.done { background: #16321F; color: #4FD08A; }
 /* expired score reads muted, not alarming */
 .big.stale { color: var(--gray-light); }
 #tile-validity b { color: var(--flare); }
+@media (max-width: 620px) {
+  .notif-panel {
+    position: fixed;
+    top: 60px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 60vh;
+  }
+  .wallet-menu {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    left: auto;
+    width: min(88vw, 260px);
+  }
+}
